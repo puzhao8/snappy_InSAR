@@ -1,0 +1,205 @@
+<graph id="Graph">
+  <version>1.0</version>
+  <node id="SliceAssembly">
+    <operator>SliceAssembly</operator>
+    <sources>
+      <sourceProduct.2 refid="ProductSet-Reader"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <selectedPolarisations>VV</selectedPolarisations>
+    </parameters>
+  </node>
+  <node id="SliceAssembly(2)">
+    <operator>SliceAssembly</operator>
+    <sources>
+      <sourceProduct.2 refid="ProductSet-Reader(2)"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <selectedPolarisations>VV</selectedPolarisations>
+    </parameters>
+  </node>
+  <node id="TOPSAR-Split">
+    <operator>TOPSAR-Split</operator>
+    <sources>
+      <sourceProduct refid="SliceAssembly"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <subswath>IW3</subswath>
+      <selectedPolarisations>VV</selectedPolarisations>
+      <firstBurstIndex>2</firstBurstIndex>
+      <lastBurstIndex>16</lastBurstIndex>
+      <wktAoi/>
+    </parameters>
+  </node>
+  <node id="TOPSAR-Split(2)">
+    <operator>TOPSAR-Split</operator>
+    <sources>
+      <sourceProduct refid="SliceAssembly(2)"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <subswath>IW3</subswath>
+      <selectedPolarisations>VV</selectedPolarisations>
+      <firstBurstIndex>2</firstBurstIndex>
+      <lastBurstIndex>16</lastBurstIndex>
+      <wktAoi/>
+    </parameters>
+  </node>
+  <node id="Apply-Orbit-File">
+    <operator>Apply-Orbit-File</operator>
+    <sources>
+      <sourceProduct refid="TOPSAR-Split"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <orbitType>Sentinel Precise (Auto Download)</orbitType>
+      <polyDegree>3</polyDegree>
+      <continueOnFail>true</continueOnFail>
+    </parameters>
+  </node>
+  <node id="Apply-Orbit-File(2)">
+    <operator>Apply-Orbit-File</operator>
+    <sources>
+      <sourceProduct refid="TOPSAR-Split(2)"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <orbitType>Sentinel Precise (Auto Download)</orbitType>
+      <polyDegree>3</polyDegree>
+      <continueOnFail>true</continueOnFail>
+    </parameters>
+  </node>
+  <node id="Back-Geocoding">
+    <operator>Back-Geocoding</operator>
+    <sources>
+      <sourceProduct refid="Apply-Orbit-File"/>
+      <sourceProduct.1 refid="Apply-Orbit-File(2)"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <demName>SRTM 3Sec</demName>
+      <demResamplingMethod>BILINEAR_INTERPOLATION</demResamplingMethod>
+      <externalDEMFile/>
+      <externalDEMNoDataValue>0.0</externalDEMNoDataValue>
+      <resamplingType>BILINEAR_INTERPOLATION</resamplingType>
+      <maskOutAreaWithoutElevation>false</maskOutAreaWithoutElevation>
+      <outputRangeAzimuthOffset>false</outputRangeAzimuthOffset>
+      <outputDerampDemodPhase>true</outputDerampDemodPhase>
+      <disableReramp>false</disableReramp>
+    </parameters>
+  </node>
+  <node id="Enhanced-Spectral-Diversity">
+    <operator>Enhanced-Spectral-Diversity</operator>
+    <sources>
+      <sourceProduct refid="Back-Geocoding"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <fineWinWidthStr>512</fineWinWidthStr>
+      <fineWinHeightStr>512</fineWinHeightStr>
+      <fineWinAccAzimuth>16</fineWinAccAzimuth>
+      <fineWinAccRange>16</fineWinAccRange>
+      <fineWinOversampling>128</fineWinOversampling>
+      <xCorrThreshold>0.1</xCorrThreshold>
+      <cohThreshold>0.15</cohThreshold>
+      <numBlocksPerOverlap>10</numBlocksPerOverlap>
+      <useSuppliedShifts>false</useSuppliedShifts>
+      <overallAzimuthShift>0.0</overallAzimuthShift>
+      <overallRangeShift>0.0</overallRangeShift>
+    </parameters>
+  </node>
+  <node id="Interferogram">
+    <operator>Interferogram</operator>
+    <sources>
+      <sourceProduct refid="Enhanced-Spectral-Diversity"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <subtractFlatEarthPhase>true</subtractFlatEarthPhase>
+      <srpPolynomialDegree>5</srpPolynomialDegree>
+      <srpNumberPoints>501</srpNumberPoints>
+      <orbitDegree>3</orbitDegree>
+      <includeCoherence>true</includeCoherence>
+      <cohWinAz>10</cohWinAz>
+      <cohWinRg>10</cohWinRg>
+      <squarePixel>false</squarePixel>
+      <subtractTopographicPhase>false</subtractTopographicPhase>
+      <demName/>
+      <externalDEMFile/>
+      <externalDEMNoDataValue>0.0</externalDEMNoDataValue>
+      <externalDEMApplyEGM/>
+      <tileExtensionPercent/>
+      <outputElevation>false</outputElevation>
+      <outputLatLon>false</outputLatLon>
+    </parameters>
+  </node>
+  <node id="TOPSAR-Deburst">
+    <operator>TOPSAR-Deburst</operator>
+    <sources>
+      <sourceProduct refid="Interferogram"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <selectedPolarisations/>
+    </parameters>
+  </node>
+  <node id="Write">
+    <operator>Write</operator>
+    <sources>
+      <sourceProduct refid="TOPSAR-Deburst"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <file>E:\Fogo Volcano 2014 Eruption\InSAR_results\S1A_IW_SLC__1SDV_20170605T050623_20170605T050714_016894_01C1AC_6BBF_Asm_Orb_Stack_Ifg_Deb_mrg_DInSAR_ML_Flt.dim</file>
+      <formatName>BEAM-DIMAP</formatName>
+    </parameters>
+  </node>
+  <node id="ProductSet-Reader(2)">
+    <operator>ProductSet-Reader</operator>
+    <sources/>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <fileList>F:\Stockholm_InSAR\DSC_rorb22_4_testing_sliceAss\S1B_IW_SLC__1SDV_20170518T050542_20170518T050609_005648_009E42_23D7.zip,F:\Stockholm_InSAR\DSC_rorb22_4_testing_sliceAss\S1B_IW_SLC__1SDV_20170518T050607_20170518T050634_005648_009E42_53F7.zip</fileList>
+    </parameters>
+  </node>
+  <node id="ProductSet-Reader">
+    <operator>ProductSet-Reader</operator>
+    <sources/>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <fileList>F:\Stockholm_InSAR\DSC_rorb22_4_testing_sliceAss\S1A_IW_SLC__1SDV_20170524T050622_20170524T050649_016719_01BC39_C9E8.zip,F:\Stockholm_InSAR\DSC_rorb22_4_testing_sliceAss\S1A_IW_SLC__1SDV_20170524T050646_20170524T050713_016719_01BC39_507C.zip</fileList>
+    </parameters>
+  </node>
+  <applicationData id="Presentation">
+    <Description/>
+    <node id="SliceAssembly">
+      <displayPosition x="165.0" y="61.0"/>
+    </node>
+    <node id="SliceAssembly(2)">
+      <displayPosition x="169.0" y="137.0"/>
+    </node>
+    <node id="TOPSAR-Split">
+      <displayPosition x="237.0" y="23.0"/>
+    </node>
+    <node id="TOPSAR-Split(2)">
+      <displayPosition x="236.0" y="182.0"/>
+    </node>
+    <node id="Apply-Orbit-File">
+      <displayPosition x="333.0" y="23.0"/>
+    </node>
+    <node id="Apply-Orbit-File(2)">
+      <displayPosition x="350.0" y="181.0"/>
+    </node>
+    <node id="Back-Geocoding">
+      <displayPosition x="443.0" y="62.0"/>
+    </node>
+    <node id="Enhanced-Spectral-Diversity">
+      <displayPosition x="562.0" y="62.0"/>
+    </node>
+    <node id="Interferogram">
+      <displayPosition x="745.0" y="63.0"/>
+    </node>
+    <node id="TOPSAR-Deburst">
+      <displayPosition x="884.0" y="63.0"/>
+    </node>
+    <node id="Write">
+      <displayPosition x="1011.0" y="63.0"/>
+    </node>
+    <node id="ProductSet-Reader(2)">
+      <displayPosition x="15.0" y="136.0"/>
+    </node>
+    <node id="ProductSet-Reader">
+      <displayPosition x="15.0" y="61.0"/>
+    </node>
+  </applicationData>
+</graph>

@@ -1,0 +1,57 @@
+<graph id="Graph">
+  <version>1.0</version>
+  <node id="SliceAssembly">
+    <operator>SliceAssembly</operator>
+    <sources>
+      <sourceProduct.2 refid="ProductSet-Reader"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <selectedPolarisations>VV</selectedPolarisations>
+    </parameters>
+  </node>
+  <node id="TOPSAR-Split">
+    <operator>TOPSAR-Split</operator>
+    <sources>
+      <sourceProduct refid="SliceAssembly"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <subswath>IW2</subswath>
+      <selectedPolarisations>VV</selectedPolarisations>
+      <firstBurstIndex>4</firstBurstIndex>
+      <lastBurstIndex>16</lastBurstIndex>
+      <wktAoi/>
+    </parameters>
+  </node>
+  <node id="Write">
+    <operator>Write</operator>
+    <sources>
+      <sourceProduct refid="TOPSAR-Split"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <file>F:\Stockholm_InSAR\test_sliceAss_TOPSAR_split_results\S1B_IW_SLC__1SDV_20170518T050542_20170518T050634_005648_009E42_23D7_Asm.dim</file>
+      <formatName>BEAM-DIMAP</formatName>
+    </parameters>
+  </node>
+  <node id="ProductSet-Reader">
+    <operator>ProductSet-Reader</operator>
+    <sources/>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <fileList>F:\Stockholm_InSAR\DSC_rorb22_4_testing_sliceAss\S1B_IW_SLC__1SDV_20170518T050542_20170518T050609_005648_009E42_23D7.zip,F:\Stockholm_InSAR\DSC_rorb22_4_testing_sliceAss\S1B_IW_SLC__1SDV_20170518T050607_20170518T050634_005648_009E42_53F7.zip</fileList>
+    </parameters>
+  </node>
+  <applicationData id="Presentation">
+    <Description/>
+    <node id="SliceAssembly">
+      <displayPosition x="165.0" y="61.0"/>
+    </node>
+    <node id="TOPSAR-Split">
+      <displayPosition x="324.0" y="62.0"/>
+    </node>
+    <node id="Write">
+      <displayPosition x="494.0" y="64.0"/>
+    </node>
+    <node id="ProductSet-Reader">
+      <displayPosition x="15.0" y="61.0"/>
+    </node>
+  </applicationData>
+</graph>

@@ -1,0 +1,92 @@
+<graph id="Graph">
+  <version>1.0</version>
+  <node id="TOPSAR-Merge">
+    <operator>TOPSAR-Merge</operator>
+    <sources>
+      <sourceProduct.2 refid="ProductSet-Reader"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <selectedPolarisations/>
+    </parameters>
+  </node>
+  <node id="TopoPhaseRemoval">
+    <operator>TopoPhaseRemoval</operator>
+    <sources>
+      <sourceProduct refid="TOPSAR-Merge"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <orbitDegree>3</orbitDegree>
+      <demName>SRTM 3Sec</demName>
+      <externalDEMFile/>
+      <externalDEMNoDataValue>0.0</externalDEMNoDataValue>
+      <tileExtensionPercent>100</tileExtensionPercent>
+      <outputTopoPhaseBand>true</outputTopoPhaseBand>
+      <outputElevationBand>false</outputElevationBand>
+      <outputLatLonBands>false</outputLatLonBands>
+    </parameters>
+  </node>
+  <node id="Multilook">
+    <operator>Multilook</operator>
+    <sources>
+      <sourceProduct refid="TopoPhaseRemoval"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <sourceBands/>
+      <nRgLooks>10</nRgLooks>
+      <nAzLooks>2</nAzLooks>
+      <outputIntensity>false</outputIntensity>
+      <grSquarePixel>false</grSquarePixel>
+    </parameters>
+  </node>
+  <node id="GoldsteinPhaseFiltering">
+    <operator>GoldsteinPhaseFiltering</operator>
+    <sources>
+      <sourceProduct refid="Multilook"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <alpha>1.0</alpha>
+      <FFTSizeString>64</FFTSizeString>
+      <windowSizeString>3</windowSizeString>
+      <useCoherenceMask>false</useCoherenceMask>
+      <coherenceThreshold>0.2</coherenceThreshold>
+    </parameters>
+  </node>
+  <node id="Write">
+    <operator>Write</operator>
+    <sources>
+      <sourceProduct refid="GoldsteinPhaseFiltering"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <file>E:\Fogo Volcano 2014 Eruption\InSAR_results\S1A_IW_SLC__1SDV_20170605T050623_20170605T050714_016894_01C1AC_6BBF_Asm_Orb_Stack_Ifg_Deb_mrg_DInSAR_ML_Flt.dim</file>
+      <formatName>BEAM-DIMAP</formatName>
+    </parameters>
+  </node>
+  <node id="ProductSet-Reader">
+    <operator>ProductSet-Reader</operator>
+    <sources/>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <fileList>F:\Stockholm_InSAR\DSC_rorb22_UP_S1A\S1A_IW_SLC__1SDV_20170605T050623_20170605T050650_016894_01C1AC_6BBF.zip,D:\Stockholm\Descending\DSC_orb22_Scene_2\DSC_orb22_Scene_2_S1_zip\Stockholm_DSC_S1A_zip\S1A_IW_SLC__1SDV_20170605T050647_20170605T050714_016894_01C1AC_799D.zip</fileList>
+    </parameters>
+  </node>
+  <applicationData id="Presentation">
+    <Description/>
+    <node id="TOPSAR-Merge">
+      <displayPosition x="493.0" y="134.0"/>
+    </node>
+    <node id="TopoPhaseRemoval">
+      <displayPosition x="619.0" y="135.0"/>
+    </node>
+    <node id="Multilook">
+      <displayPosition x="766.0" y="136.0"/>
+    </node>
+    <node id="GoldsteinPhaseFiltering">
+      <displayPosition x="848.0" y="136.0"/>
+    </node>
+    <node id="Write">
+      <displayPosition x="1018.0" y="137.0"/>
+    </node>
+    <node id="ProductSet-Reader">
+      <displayPosition x="326.0" y="134.0"/>
+    </node>
+  </applicationData>
+</graph>
